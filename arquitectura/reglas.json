@@ -1,0 +1,9 @@
+[
+  {
+    "id": "R1",
+    "adr": "ADR-001",
+    "modulo": "PONGAN-AQUI-EL-MODULO",
+    "no_puede_importar": ["PONGAN-AQUI-EL-OTRO"],
+    "porque": "Escriban aqui, en lenguaje de negocio, que se rompe si esta regla se viola."
+  }
+]
