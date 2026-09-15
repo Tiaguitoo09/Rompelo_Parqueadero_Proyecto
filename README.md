@@ -6,6 +6,17 @@
 - `arquitectura/reglas.json` — **aquí escriben ustedes.** Una regla por ADR.
 - `.github/workflows/pipeline.yml` — hace correr el verificador en cada push.
 
+## Los drivers vigentes
+
+| Driver | ADR | Qué dice |
+|---|---|---|
+| D1 | ADR-001 | `espacios` no puede escribir en el registro de `ingresos`; `ingresos` no puede depender de que `espacios` le devuelva algo distinto a lectura |
+| D2 | ADR-002 | `ingresos` no puede importar `avisos` directamente |
+| D3 | ADR-003 | se separa la lógica de cobro de la lógica de registro dentro de `ingresos`/`app` |
+| D4 | ADR-004 | `avisos` no puede escribir en `espacios` ni en `ingresos` |
+
+D1 y D2 son los "seguros" (mínimo del taller). D3 y D4 son el plus — el mínimo son 2.
+
 ## Qué falta
 
 La carpeta `src/` con los archivos que les generó la IA. Péguenlos ahí.
