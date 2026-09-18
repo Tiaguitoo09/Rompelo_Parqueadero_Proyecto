@@ -2,8 +2,8 @@
   {
     "id": "R1",
     "adr": "ADR-001",
-    "modulo": "PONGAN-AQUI-EL-MODULO",
-    "no_puede_importar": ["PONGAN-AQUI-EL-OTRO"],
-    "porque": "Escriban aqui, en lenguaje de negocio, que se rompe si esta regla se viola."
+    "modulo": "espacios",
+    "no_puede_importar": ["ingresos"],
+    "porque": "El registro de entradas y salidas es el libro contable del parqueadero y debe tener un solo autor. Si espacios pudiera escribirlo para 'corregir' un cupo, un cobro mal hecho ya no se podria rastrear hasta un unico responsable."
   }
 ]
