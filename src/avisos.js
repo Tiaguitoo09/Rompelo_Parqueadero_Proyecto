@@ -3,6 +3,9 @@
 // cupos ni el registro, trabaja con la copia de datos que le entregan.
 // Es el módulo menos confiable: depende de un servidor de correo que se cae solo.
 
+// ROJO A PROPÓSITO: este import viola R4 (ADR-004). Se quita en el siguiente commit.
+import { cuposLibres } from './espacios.js';
+
 let bandeja = [];
 let correoDisponible = true;
 
