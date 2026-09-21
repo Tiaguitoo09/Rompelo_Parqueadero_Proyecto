@@ -9,6 +9,15 @@
     "porque": "El registro de entradas y salidas es el libro contable del parqueadero y debe tener un solo autor. Si espacios pudiera escribirlo para 'corregir' un cupo, un cobro mal hecho ya no se podria rastrear hasta un unico responsable."
   },
   {
+    "id": "R2",
+    "adr": "ADR-002",
+    "modulo": "ingresos",
+    "no_puede_importar": [
+      "avisos"
+    ],
+    "porque": "El registro de entradas y salidas es la operacion critica del negocio. Un servidor de correo caido no puede impedir que un carro entre o salga del parqueadero."
+  },
+  {
     "id": "R3",
     "adr": "ADR-003",
     "modulo": "ingresos",
