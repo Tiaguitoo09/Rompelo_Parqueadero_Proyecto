@@ -53,7 +53,7 @@ escucha, y si el oyente falla, el registro ya quedó hecho.
 | Regla | ADR | La frontera | Qué protege | Responsable |
 |---|---|---|---|---|
 | R1 | [ADR-001](arquitectura/adr/ADR-001.md) | `espacios` no importa `ingresos` | El libro de entradas y salidas tiene un solo autor | Jesús |
-| R2 | [ADR-002](arquitectura/adr/ADR-002.md) | `ingresos` no importa `avisos` | Si el correo se cae, la entrada y la salida no se caen · *regla pendiente* | Santiago |
+| R2 | [ADR-002](arquitectura/adr/ADR-002.md) | `ingresos` no importa `avisos` | Si el correo se cae, la entrada y la salida no se caen | Santiago |
 | R3 | [ADR-003](arquitectura/adr/ADR-003.md) | `ingresos` no importa `cobro` | Una tarifa mal configurada no deja un carro atrapado en la caseta | Julián |
 | R4 | [ADR-004](arquitectura/adr/ADR-004.md) | `avisos` no importa `espacios` ni `ingresos` | Un aviso solo cuenta lo que pasó, nunca lo cambia | Sergio |
 
