@@ -21,12 +21,12 @@ export function reiniciarAvisos() {
 }
 
 export function avisarEntrada({ placa, cupo, hora, libres }) {
-  enviar('Cliente ' + placa, 'Su vehículo entró al cupo ' + cupo + ' a las ' + formatoHora(hora) + '.');
+  enviar('Cliente ' + placa, 'A las ' + formatoHora(hora) + ' su vehículo entró al cupo ' + cupo + '.');
   if (libres === 0) enviar('Operario', 'Parqueadero lleno: no quedan cupos libres.');
 }
 
 export function avisarSalida({ placa, cupo, hora }) {
-  enviar('Cliente ' + placa, 'Su vehículo salió del cupo ' + cupo + ' a las ' + formatoHora(hora) + '.');
+  enviar('Cliente ' + placa, 'A las ' + formatoHora(hora) + ' su vehículo salió del cupo ' + cupo + '.');
 }
 
 export function avisarSinCupo({ placa }) {

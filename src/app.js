@@ -111,7 +111,8 @@ if (typeof document !== 'undefined') iniciarInterfaz();
 function iniciarInterfaz() {
   const $ = id => document.getElementById(id);
   const pesos = v => '$' + v.toLocaleString('es-CO');
-  const hhmm = d => new Date(d).toLocaleTimeString('es-CO', { hour: '2-digit', minute: '2-digit' });
+  // Con espacios que no parten la línea: «04:17 p. m.» nunca queda cortada en dos renglones.
+  const hhmm = d => new Date(d).toLocaleTimeString('es-CO', { hour: '2-digit', minute: '2-digit' }).replace(/\s/g, ' ');
 
   $('form-entrada').addEventListener('submit', ev => {
     ev.preventDefault();

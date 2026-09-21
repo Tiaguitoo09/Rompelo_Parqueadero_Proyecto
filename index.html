@@ -23,10 +23,12 @@
   .ocupado { background: #eceef1; color: var(--gris); }
   form { display: flex; gap: 8px; margin-bottom: 8px; }
   input[type=text] { flex: 1; min-width: 0; padding: 8px; font-size: 1rem; text-transform: uppercase; }
+  input[type=text]::placeholder { text-transform: none; }
   button { padding: 8px 12px; cursor: pointer; }
   ul { list-style: none; margin: 0; padding: 0; font-size: .9rem; }
   li { padding: 6px 0; border-bottom: 1px solid #eef0f3; }
-  li button { margin-left: 8px; padding: 4px 8px; }
+  #adentro li { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+  li button { padding: 4px 8px; flex-shrink: 0; }
   .vacio { color: var(--gris); font-style: italic; }
   .pendiente { color: var(--ambar); }
   .falla { color: var(--rojo); }
@@ -59,7 +61,7 @@
   <section>
     <h2>Entrada</h2>
     <form id="form-entrada">
-      <input id="placa" type="text" placeholder="Placa, p. ej. ABC123" autocomplete="off" required>
+      <input id="placa" type="text" placeholder="Placa (ej. ABC123)" autocomplete="off" required>
       <button type="submit">Registrar entrada</button>
     </form>
     <p id="estado" role="status"></p>
