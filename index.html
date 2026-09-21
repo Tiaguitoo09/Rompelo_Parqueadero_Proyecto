@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Parqueadero · Rómpelo a propósito</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%231e3a5f'/%3E%3Ctext x='16' y='23' font-size='20' font-family='sans-serif' font-weight='bold' fill='white' text-anchor='middle'%3EP%3C/text%3E%3C/svg%3E">
+<style>
+  :root { --verde: #1f7a4d; --gris: #5b6470; --rojo: #b3261e; --ambar: #8a5a00; --fondo: #f5f6f8; --borde: #d7dbe0; }
+  * { box-sizing: border-box; }
+  body { font-family: system-ui, sans-serif; margin: 0; background: var(--fondo); color: #1c2430; }
+  header { background: #1e3a5f; color: #fff; padding: 14px 20px; }
+  header h1 { margin: 0; font-size: 1.3rem; }
+  header p { margin: 4px 0 0; opacity: .85; font-size: .9rem; }
+  main { max-width: 1100px; margin: 0 auto; padding: 16px; display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); }
+  section { background: #fff; border: 1px solid var(--borde); border-radius: 8px; padding: 14px 16px; }
+  h2 { font-size: 1rem; margin: 0 0 10px; }
+  h2.separado { margin-top: 16px; }
+  .cupos { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+  .cupo { border-radius: 6px; padding: 8px; text-align: center; font-size: .85rem; border: 1px solid var(--borde); }
+  .cupo strong { display: block; }
+  .libre { background: #e7f5ee; color: var(--verde); }
+  .ocupado { background: #eceef1; color: var(--gris); }
+  form { display: flex; gap: 8px; margin-bottom: 8px; }
+  input[type=text] { flex: 1; min-width: 0; padding: 8px; font-size: 1rem; text-transform: uppercase; }
+  button { padding: 8px 12px; cursor: pointer; }
+  ul { list-style: none; margin: 0; padding: 0; font-size: .9rem; }
+  li { padding: 6px 0; border-bottom: 1px solid #eef0f3; }
+  li button { margin-left: 8px; padding: 4px 8px; }
+  .vacio { color: var(--gris); font-style: italic; }
+  .pendiente { color: var(--ambar); }
+  .falla { color: var(--rojo); }
+  #estado { min-height: 1.4em; font-size: .9rem; margin: 0 0 12px; }
+  #estado.ok { color: var(--verde); }
+  #estado.error { color: var(--rojo); }
+  label { display: block; margin: 6px 0 0; font-size: .9rem; }
+  .ayuda { color: var(--gris); font-size: .8rem; margin: 2px 0 10px 24px; }
+  #sin-servidor { display: none; background: #fff4e5; border: 1px solid #f0c27b; margin: 16px; padding: 12px 16px; border-radius: 8px; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Parqueadero</h1>
+  <p>Taller «Rómpelo a propósito» · Arquitectura de Software · UTadeo · reloj: <span id="reloj">—</span></p>
+</header>
+
+<div id="sin-servidor" role="alert">
+  <strong>La aplicación no cargó.</strong> El navegador bloquea los módulos ES6 cuando la página se
+  abre con doble clic (<code>file://</code>). Ábrala con un servidor: <code>python -m http.server</code>
+  en esta carpeta y luego <code>http://localhost:8000</code>, o con Live Server de VS Code.
+</div>
+
+<main>
+  <section>
+    <h2>Cupos · <span id="libres"></span></h2>
+    <div id="cupos" class="cupos"></div>
+  </section>
+
+  <section>
+    <h2>Entrada</h2>
+    <form id="form-entrada">
+      <input id="placa" type="text" placeholder="Placa, p. ej. ABC123" autocomplete="off" required>
+      <button type="submit">Registrar entrada</button>
+    </form>
+    <p id="estado" role="status"></p>
+    <h2>Vehículos adentro</h2>
+    <ul id="adentro"></ul>
+  </section>
+
+  <section>
+    <h2>Caja</h2>
+    <ul id="cobrados"></ul>
+    <h2 class="separado">Cobros pendientes (ADR-003)</h2>
+    <ul id="pendientes"></ul>
+  </section>
+
+  <section>
+    <h2>Avisos enviados</h2>
+    <ul id="mensajes"></ul>
+  </section>
+
+  <section>
+    <h2>Rómpelo: fallas a propósito</h2>
+    <label><input id="correo-caido" type="checkbox"> Tumbar el servidor de correo</label>
+    <p class="ayuda">ADR-002 y ADR-004: el aviso se pierde; la entrada y la salida no.</p>
+    <label><input id="tarifa-rota" type="checkbox"> Dañar la configuración de la tarifa</label>
+    <p class="ayuda">ADR-003: el carro sale igual y el cobro queda pendiente.</p>
+    <button id="adelantar" type="button">Adelantar el reloj 1 hora</button>
+    <button id="reiniciar" type="button">Reiniciar el día</button>
+  </section>
+
+  <section>
+    <h2>Bitácora de fallas</h2>
+    <ul id="fallas"></ul>
+  </section>
+</main>
+
+<script type="module" src="src/app.js"></script>
+<script>
+  // Si el módulo no arrancó (típico al abrir con doble clic), se dice en pantalla en vez de
+  // dejar una página vacía que parece funcionar.
+  window.addEventListener('load', function () {
+    if (document.documentElement.dataset.app !== 'lista') {
+      document.getElementById('sin-servidor').style.display = 'block';
+    }
+  });
+</script>
+</body>
+</html>

@@ -2,16 +2,17 @@
 
 ## Módulos propuestos
 
-Los 4 drivers protegen los límites entre estos módulos (van dentro de `src/`):
+Los 4 drivers protegen los límites entre estos módulos (un archivo por módulo en `src/`; `index.html` importa `src/app.js`):
 
 | Módulo | Responsabilidad |
 |---|---|
-| `espacios/` | Estado de los cupos (libre / ocupado). Expone solo consulta hacia afuera. |
-| `ingresos/` | Registro de entradas y salidas de vehículos. Módulo central del negocio. |
-| `avisos/` | Notificaciones (correo, "cupo lleno", etc.). Solo lee estado, nunca escribe. |
-| `app/` | Capa de orquestación. Es la única que puede importar de los tres módulos de dominio para conectarlos. |
+| `src/espacios.js` | Estado de los cupos (libre / ocupado). Hacia afuera solo entrega copias. |
+| `src/ingresos.js` | Registro de entradas y salidas: el libro contable. Es el único que lo escribe. |
+| `src/cobro.js` | Tarifa y cobro de la salida. Vive aparte del registro por ADR-003. |
+| `src/avisos.js` | Notificaciones (correo, "parqueadero lleno"). Solo cuenta lo que pasó: recibe los datos, no los consulta. |
+| `src/app.js` | Capa de orquestación. Es el único módulo que importa a los otros cuatro y los conecta. |
 
-Regla general: `espacios`, `ingresos` y `avisos` no se importan libremente entre sí — solo `app` los conecta. Los 4 drivers de abajo son las restricciones concretas que hacen cumplir esto.
+Regla general: `espacios`, `ingresos`, `cobro` y `avisos` no se importan entre sí — solo `app` los conecta. Los 4 drivers de abajo son las restricciones concretas que hacen cumplir esto.
 
 ## Los 4 drivers
 
