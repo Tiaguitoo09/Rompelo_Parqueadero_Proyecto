@@ -73,15 +73,19 @@ Solo hace falta Node. Cada comando sale 0 si todo está bien y 1 si no.
 
 ## La prueba: verde, rojo, verde
 
-1. **Sistema sano** → verde.
-2. **Rojo a propósito:** un import prohibido por cada ADR → rojo, con el `porque` de cada regla.
-   Las pruebas seguían en verde: el código funcionaba, la arquitectura no. Eso solo lo ve el
-   verificador.
-3. **Verde otra vez:** se quitan esos imports → verde.
+| # | Commit | Verificar arquitectura |
+|---|---|---|
+| 1 | Sistema sano (`b5e0f09`) | ✅ [verde](https://github.com/Tiaguitoo09/Rompelo_Parqueadero_Proyecto/actions/runs/35664752889) |
+| 2 | Ya con las cuatro reglas, R1–R4 (`144de19`) | ✅ [verde](https://github.com/Tiaguitoo09/Rompelo_Parqueadero_Proyecto/actions/runs/35665912716) |
+| 3 | **Rojo a propósito:** un import prohibido por cada ADR (`9f7decc`) | ❌ [rojo: las 4 reglas violadas, cada una con su `porque`](https://github.com/Tiaguitoo09/Rompelo_Parqueadero_Proyecto/actions/runs/35666107065) |
+| 4 | **Verde otra vez:** se quitan esos imports (`990b007`) | ✅ [verde](https://github.com/Tiaguitoo09/Rompelo_Parqueadero_Proyecto/actions/runs/35666304656) |
 
-Está en la pestaña **Actions**, workflow *Verificar arquitectura*. Una regla que nunca se violó a
-propósito no se sabe si funciona; por eso `probar-reglas.js` además las viola todas en cada push,
-en una copia del código.
+En el commit rojo, el workflow *Calidad* [salió verde](https://github.com/Tiaguitoo09/Rompelo_Parqueadero_Proyecto/actions/runs/35666107223):
+la app corría y las pruebas pasaban. El código funcionaba y la arquitectura no, y eso solo lo ve
+el verificador.
+
+Una regla que nunca se violó a propósito no se sabe si funciona; por eso `probar-reglas.js`
+además las viola todas en cada push, en una copia del código.
 
 ## Lo que el verificador no ve
 
