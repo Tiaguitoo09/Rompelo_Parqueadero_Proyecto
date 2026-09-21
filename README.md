@@ -6,7 +6,10 @@ módulos ES6, sin frameworks, sin npm, sin build— cuyas fronteras están escri
 
 ## Cómo abrirlo
 
-Chrome y Edge bloquean los módulos ES6 cuando la página se abre con doble clic (`file://`); si
+**En línea:** <https://tiaguitoo09.github.io/Rompelo_Parqueadero_Proyecto/>. Se publica sola, y
+solo si la arquitectura pasa: si una regla se viola, el despliegue no corre.
+
+**En su máquina:** Chrome y Edge bloquean los módulos ES6 cuando la página se abre con doble clic (`file://`); si
 pasa, la página lo dice en pantalla. Ábranla con un servidor, desde la raíz del repo:
 
 ```
@@ -111,4 +114,5 @@ Por eso existen las pruebas de comportamiento además de las reglas.
 - `tools/verificar.js` — el verificador del kit. **No se toca.**
 - `tools/probar-reglas.js` — la prueba por mutación de las reglas.
 - `tests/` — los drivers, probados por comportamiento.
-- `.github/workflows/` — `pipeline.yml` (Verificar arquitectura) y `calidad.yml` (Calidad).
+- `.github/workflows/` — `pipeline.yml` (Verificar arquitectura), `calidad.yml` (Calidad) y
+  `desplegar.yml` (publica en Pages solo si Verificar arquitectura salió en verde).

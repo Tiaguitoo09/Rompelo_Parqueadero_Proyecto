@@ -1,0 +1,40 @@
+# Publica la app en GitHub Pages SOLO cuando "Verificar arquitectura" terminó en verde en master.
+# Así es verdad lo que imprime verificar.js: si una regla se viola, el despliegue se detiene
+# (este job queda "skipped", nunca en rojo). Es un workflow aparte: pipeline.yml no se toca.
+# Requiere, una sola vez, que el dueño del repo active Settings → Pages → Source: GitHub Actions.
+name: Desplegar
+
+on:
+  workflow_run:
+    workflows: ["Verificar arquitectura"]
+    types: [completed]
+    branches: [master]
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  desplegar:
+    name: Publicar en GitHub Pages
+    if: github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.despliegue.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_sha }}
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: '.'
+      - name: Publicar
+        id: despliegue
+        uses: actions/deploy-pages@v4
