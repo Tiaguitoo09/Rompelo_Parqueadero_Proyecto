@@ -4,46 +4,232 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Parqueadero · Rómpelo a propósito</title>
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%231e3a5f'/%3E%3Ctext x='16' y='23' font-size='20' font-family='sans-serif' font-weight='bold' fill='white' text-anchor='middle'%3EP%3C/text%3E%3C/svg%3E">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%231D4ED8'/%3E%3Crect x='3' y='3' width='26' height='26' rx='4' fill='none' stroke='white' stroke-width='2'/%3E%3Ctext x='16' y='23' font-size='19' font-family='sans-serif' font-weight='bold' fill='white' text-anchor='middle'%3EP%3C/text%3E%3C/svg%3E">
 <style>
-  :root { --verde: #1f7a4d; --gris: #5b6470; --rojo: #b3261e; --ambar: #8a5a00; --fondo: #f5f6f8; --borde: #d7dbe0; }
+  /* Señalética de parqueadero: asfalto, la «P» azul, amarillo y negro de talanquera.
+     Solo fuentes del sistema: la app no depende de internet. */
+  :root {
+    --negro: #141414;
+    --asfalto: #2F3237;
+    --carril: #26292D;
+    --concreto: #ECE9E2;
+    --papel: #FBFAF7;
+    --papel-2: #E4E0D7;
+    --azul: #1D4ED8;
+    --amarillo: #F2C200;
+    --amarillo-suave: #FFF4C2;
+    --rojo: #C8102E;
+    --verde: #0B7A3E;
+    --verde-claro: #7EE2A8;
+    --linea-blanca: #EDEDED;
+    --tinta-2: #4A463F;
+    --separador: #CFCAC0;
+    --letra-senal: Bahnschrift, "DIN Alternate", "Arial Narrow", sans-serif;
+    --letra-texto: "Segoe UI Variable Text", "Segoe UI", system-ui, -apple-system, sans-serif;
+    --letra-mono: "Cascadia Mono", Consolas, ui-monospace, monospace;
+  }
   * { box-sizing: border-box; }
-  body { font-family: system-ui, sans-serif; margin: 0; background: var(--fondo); color: #1c2430; }
-  header { background: #1e3a5f; color: #fff; padding: 14px 20px; }
-  header h1 { margin: 0; font-size: 1.3rem; }
-  header p { margin: 4px 0 0; opacity: .85; font-size: .9rem; }
-  main { max-width: 1100px; margin: 0 auto; padding: 16px; display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); }
-  section { background: #fff; border: 1px solid var(--borde); border-radius: 8px; padding: 14px 16px; }
-  h2 { font-size: 1rem; margin: 0 0 10px; }
-  h2.separado { margin-top: 16px; }
-  .cupos { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
-  .cupo { border-radius: 6px; padding: 8px; text-align: center; font-size: .85rem; border: 1px solid var(--borde); }
-  .cupo strong { display: block; }
-  .libre { background: #e7f5ee; color: var(--verde); }
-  .ocupado { background: #eceef1; color: var(--gris); }
-  form { display: flex; gap: 8px; margin-bottom: 8px; }
-  input[type=text] { flex: 1; min-width: 0; padding: 8px; font-size: 1rem; text-transform: uppercase; }
-  input[type=text]::placeholder { text-transform: none; }
-  button { padding: 8px 12px; cursor: pointer; }
-  ul { list-style: none; margin: 0; padding: 0; font-size: .9rem; }
-  li { padding: 6px 0; border-bottom: 1px solid #eef0f3; }
-  #adentro li { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
-  li button { padding: 4px 8px; flex-shrink: 0; }
-  .vacio { color: var(--gris); font-style: italic; }
-  .pendiente { color: var(--ambar); }
-  .falla { color: var(--rojo); }
-  #estado { min-height: 1.4em; font-size: .9rem; margin: 0 0 12px; }
-  #estado.ok { color: var(--verde); }
-  #estado.error { color: var(--rojo); }
-  label { display: block; margin: 6px 0 0; font-size: .9rem; }
-  .ayuda { color: var(--gris); font-size: .8rem; margin: 2px 0 10px 24px; }
-  #sin-servidor { display: none; background: #fff4e5; border: 1px solid #f0c27b; margin: 16px; padding: 12px 16px; border-radius: 8px; }
+  body { margin: 0; background: var(--concreto); color: var(--negro); font-family: var(--letra-texto); }
+  button, input { font: inherit; }
+  button:focus-visible, input:focus-visible { outline: 3px solid var(--azul); outline-offset: 2px; }
+  .solo-lector { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+  /* ---------- Cabecera ---------- */
+  .cabecera { background: var(--negro); color: #FFFFFF; }
+  .cabecera-fila { max-width: 1280px; margin: 0 auto; min-height: 76px; padding: 10px 40px; display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+  .marca { display: flex; align-items: center; gap: 16px; min-width: 0; }
+  .senal-p { padding: 3px; border-radius: 8px; background: var(--azul); flex-shrink: 0; }
+  .senal-p span { width: 42px; height: 42px; border: 2px solid #FFFFFF; border-radius: 6px; display: flex; align-items: center; justify-content: center; font: 700 30px var(--letra-senal); }
+  h1 { margin: 0; font: 700 24px var(--letra-senal); letter-spacing: 0.08em; }
+  .subtitulo { margin: 2px 0 0; font-size: 12px; color: #C9C4BA; }
+  .cabecera-estado { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+  .salud { padding: 8px 14px; border-radius: 6px; font: 700 15px var(--letra-senal); letter-spacing: 0.06em; background: var(--verde); }
+  .salud.falla { background: var(--rojo); }
+  .reloj { padding: 6px 14px; border-radius: 6px; background: #000000; border: 1px solid #3A3A3A; color: var(--amarillo); font: 600 22px var(--letra-senal); letter-spacing: 0.04em; }
+  .franja { height: 10px; background: repeating-linear-gradient(135deg, var(--amarillo) 0 16px, var(--negro) 16px 32px); }
+
+  #sin-servidor { display: none; max-width: 1200px; margin: 16px auto 0; background: var(--amarillo-suave); border: 2px solid var(--negro); padding: 12px 16px; border-radius: 8px; }
+
+  /* ---------- Estructura ---------- */
+  main { max-width: 1280px; margin: 0 auto; padding: 28px 40px 40px; display: flex; flex-direction: column; gap: 24px; }
+  .fila-principal, .fila-secundaria { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); gap: 24px; align-items: start; }
+  .columna { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+  .tarjeta { background: var(--papel); border: 2px solid var(--negro); border-radius: 8px; padding: 18px 22px; min-width: 0; }
+  h2 { margin: 0; font: 700 17px var(--letra-senal); letter-spacing: 0.1em; }
+  .titulo-con-nota { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; margin-bottom: 12px; flex-wrap: wrap; }
+  .nota { font-size: 12px; color: var(--tinta-2); }
+  .nota-roja { color: var(--rojo); font-weight: 700; }
+  .vacio { list-style: none; color: var(--tinta-2); font-style: italic; font-size: 13px; padding: 6px 0; }
+
+  /* ---------- Indicadores: letreros ---------- */
+  .indicadores { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
+  .letrero { background: var(--papel); border: 3px solid var(--negro); border-radius: 8px; padding: 14px 18px 16px; display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+  .letrero.azul { background: var(--azul); border-color: var(--azul); color: #FFFFFF; }
+  .letrero.amarillo { background: var(--amarillo); }
+  .letrero-etiqueta { font: 700 14px var(--letra-senal); letter-spacing: 0.14em; }
+  .letrero-valor { font: 700 46px/1.05 var(--letra-senal); }
+  .letrero-valor small { font-size: 18px; font-weight: 600; margin-left: 8px; }
+  .letrero-sub { font-size: 13px; color: var(--tinta-2); overflow-wrap: anywhere; }
+  .letrero.azul .letrero-sub { color: #DCE6FF; }
+  .letrero.amarillo .letrero-sub { color: var(--negro); }
+
+  /* ---------- Plano ---------- */
+  .plano { background: var(--asfalto); color: #FFFFFF; border-radius: 8px; padding: 18px 22px 22px; min-width: 0; }
+  .plano .titulo-con-nota { margin-bottom: 14px; }
+  .leyenda { display: flex; gap: 16px; font-size: 12px; color: #D5D8DC; }
+  .leyenda span { display: flex; align-items: center; gap: 6px; }
+  .muestra-libre { width: 12px; height: 12px; border: 2px solid var(--verde-claro); }
+  .muestra-ocupado { width: 12px; height: 12px; background: var(--linea-blanca); }
+  .puestos { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; }
+  .puesto { min-height: 212px; border: 3px solid var(--linea-blanca); padding: 8px 10px 10px; display: flex; flex-direction: column; align-items: center; gap: 8px; min-width: 0; }
+  .puestos-arriba .puesto { border-bottom: 0; }
+  .puestos-abajo .puesto { border-top: 0; }
+  .puesto-cabecera { align-self: stretch; display: flex; justify-content: space-between; align-items: baseline; gap: 6px; }
+  .puesto-id { font: 700 18px var(--letra-senal); color: var(--linea-blanca); }
+  .puesto-hora { font-size: 12px; color: #C9CCD1; }
+  .puesto-libre { flex: 1; display: flex; align-items: center; font: 700 20px var(--letra-senal); letter-spacing: 0.24em; color: var(--verde-claro); }
+  .carro { flex-shrink: 0; }
+  .placa { padding: 2px 10px; border-radius: 4px; background: #F7C600; color: #111111; border: 1.5px solid #111111; font: 700 13px var(--letra-senal); letter-spacing: 0.08em; white-space: nowrap; }
+  .boton-salida { margin-top: auto; width: 100%; min-height: 44px; border: 0; border-radius: 4px; background: #FFFFFF; color: var(--negro); font: 700 14px var(--letra-senal); letter-spacing: 0.06em; cursor: pointer; }
+  .boton-salida:hover { background: var(--amarillo); }
+  .carril { height: 56px; margin: 14px 0; background: var(--carril); display: flex; align-items: center; gap: 14px; padding: 0 14px; }
+  .caseta { display: flex; align-items: center; gap: 10px; }
+  .caseta-poste { width: 16px; height: 30px; background: var(--amarillo); }
+  .caseta-brazo { width: 64px; height: 8px; background: repeating-linear-gradient(90deg, var(--rojo) 0 10px, #FFFFFF 10px 20px); }
+  .carril-texto { font: 700 13px var(--letra-senal); letter-spacing: 0.12em; }
+  .carril-linea { flex: 1; border-top: 3px dashed var(--amarillo); }
+  .carril-flechas { font: 700 18px var(--letra-senal); letter-spacing: 0.2em; }
+
+  /* ---------- Entrada ---------- */
+  form { display: flex; gap: 10px; align-items: flex-end; margin: 0 0 12px; }
+  .campo { display: flex; flex-direction: column; gap: 6px; flex: 1; min-width: 0; font-size: 13px; font-weight: 600; color: var(--tinta-2); }
+  .campo input { height: 48px; border: 2px solid var(--negro); border-radius: 6px; padding: 0 12px; font: 20px var(--letra-senal); letter-spacing: 0.08em; text-transform: uppercase; color: var(--negro); background: #FFFFFF; min-width: 0; }
+  .campo input::placeholder { text-transform: none; letter-spacing: normal; font: 16px var(--letra-texto); color: #6E6A62; }
+  .boton-primario { height: 48px; padding: 0 18px; border: 0; border-radius: 6px; background: var(--negro); color: #FFFFFF; font: 700 15px var(--letra-senal); letter-spacing: 0.08em; cursor: pointer; }
+  .estado { margin: 0; padding: 12px 14px; border-radius: 6px; font-size: 13px; font-weight: 600; line-height: 1.45; }
+  .estado:empty { display: none; }
+  .estado.ok { background: #E3F2E9; color: #0A5A2E; border: 2px solid var(--verde); }
+  .estado.aviso { background: var(--amarillo); color: var(--negro); }
+  .estado.error { background: #FBE3E6; color: #8E0B20; border: 2px solid var(--rojo); }
+
+  /* ---------- Rómpelo: interruptores ---------- */
+  .interruptor { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 14px 0; border-bottom: 2px dashed var(--separador); cursor: pointer; }
+  .interruptor-texto { display: flex; flex-direction: column; gap: 3px; }
+  .interruptor-texto strong { font-size: 14px; }
+  .interruptor-texto span { font-size: 12px; color: var(--tinta-2); }
+  .interruptor input { appearance: none; -webkit-appearance: none; margin: 0; flex-shrink: 0; width: 48px; height: 28px; border-radius: 6px; background: #B9B4AA; position: relative; cursor: pointer; transition: background 0.15s; }
+  .interruptor input::before { content: ""; position: absolute; top: 3px; left: 3px; width: 22px; height: 22px; border-radius: 4px; background: #FFFFFF; transition: transform 0.15s; }
+  .interruptor input:checked { background: var(--rojo); }
+  .interruptor input:checked::before { transform: translateX(20px); }
+  .botones { display: flex; gap: 10px; padding-top: 14px; }
+  .boton { flex: 1; min-height: 44px; border: 2px solid var(--negro); border-radius: 6px; background: #FFFFFF; color: var(--negro); font-size: 14px; font-weight: 700; cursor: pointer; }
+  .boton.secundario { background: var(--papel-2); }
+
+  /* ---------- Caja ---------- */
+  .caja-lista { list-style: none; margin: 0; padding: 0; }
+  .caja-lista li:not(.vacio) { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 8px 0; border-bottom: 2px dashed var(--separador); font-size: 14px; }
+  .caja-valor { font: 700 17px var(--letra-senal); }
+  .caja-lista li.pendiente { margin-top: 8px; padding: 10px 12px; border: 2px solid var(--negro); border-radius: 6px; background: var(--amarillo-suave); }
+  .chip-cobrar { padding: 3px 8px; border-radius: 4px; background: var(--negro); color: var(--amarillo); font: 700 12px var(--letra-senal); letter-spacing: 0.08em; white-space: nowrap; }
+
+  /* ---------- Arquitectura en vivo ---------- */
+  .mapa-dibujo { display: block; width: 100%; max-width: 638px; height: auto; }
+  .arista-permitida { stroke: var(--negro); stroke-width: 2; fill: none; }
+  .flecha-punta { fill: var(--negro); }
+  .arista-prohibida { stroke: var(--rojo); stroke-width: 2.5; stroke-dasharray: 6 5; fill: none; }
+  .nodo rect { fill: #FFFFFF; stroke: var(--negro); stroke-width: 2; transition: fill 0.25s; }
+  .nodo text { font-family: var(--letra-senal); fill: var(--negro); }
+  .nodo .nodo-nombre { font-size: 17px; font-weight: 700; }
+  .nodo .nodo-rol { font-size: 11px; font-family: var(--letra-texto); }
+  .nodo .nodo-estado { font-size: 12px; font-weight: 700; letter-spacing: 0.06em; fill: var(--verde); }
+  .nodo.orquesta rect { fill: var(--negro); }
+  .nodo.orquesta text { fill: #FFFFFF; }
+  .nodo.orquesta .nodo-estado { fill: var(--verde-claro); }
+  .nodo.falla rect { fill: var(--rojo); }
+  .nodo.falla text, .nodo.falla .nodo-estado { fill: #FFFFFF; }
+  .nodo.alerta rect { fill: var(--amarillo); }
+  .nodo.alerta .nodo-estado { fill: var(--negro); }
+  .nodo.pulso rect { animation: pulso 0.9s ease-out; }
+  @keyframes pulso { from { stroke: var(--azul); stroke-width: 7; } to { stroke: var(--negro); stroke-width: 2; } }
+  .regla rect { fill: #FFFFFF; stroke: var(--rojo); stroke-width: 2; }
+  .regla text { font-family: var(--letra-senal); font-size: 12px; font-weight: 700; fill: var(--negro); }
+  /* En escritorio la lista queda solo para lectores de pantalla; en el celular reemplaza al dibujo. */
+  .mapa-movil { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  .mapa-lista { list-style: none; margin: 0 0 10px; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+  .mapa-lista li { display: flex; justify-content: space-between; gap: 12px; padding: 10px 12px; border: 2px solid var(--negro); border-radius: 6px; background: #FFFFFF; font: 700 14px var(--letra-senal); letter-spacing: 0.04em; }
+  .mapa-lista li.orquesta { background: var(--negro); color: #FFFFFF; }
+  .mapa-lista li.falla { background: var(--rojo); color: #FFFFFF; }
+  .mapa-lista li.alerta { background: var(--amarillo); }
+  .mapa-lista li.ok span { color: var(--verde); }
+  .mapa-reglas { margin: 0; font-size: 12px; color: var(--tinta-2); line-height: 1.5; }
+  .mapa-pie { display: flex; justify-content: space-between; align-items: center; gap: 16px; padding-top: 12px; margin-top: 12px; border-top: 2px dashed var(--separador); flex-wrap: wrap; }
+  .mapa-pie p { margin: 0; font-size: 13px; line-height: 1.45; max-width: 420px; }
+  .convenciones { display: flex; gap: 14px; font-size: 12px; color: var(--tinta-2); }
+  .convenciones span { display: flex; align-items: center; gap: 6px; }
+  .raya { width: 18px; border-top: 2px solid var(--negro); }
+  .raya.prohibida { border-top: 2.5px dashed var(--rojo); }
+
+  /* ---------- Bitácora ---------- */
+  .linea { list-style: none; margin: 0; padding: 0; }
+  .evento { display: grid; grid-template-columns: 30px minmax(0, 1fr) auto; gap: 12px; align-items: center; padding: 8px 0; border-bottom: 2px dashed #DDD8CE; }
+  .evento-icono { width: 30px; height: 30px; border-radius: 4px; display: flex; align-items: center; justify-content: center; }
+  .tono-ok .evento-icono { background: var(--negro); color: #FFFFFF; }
+  .tono-info .evento-icono { background: var(--azul); color: #FFFFFF; }
+  .tono-falla .evento-icono { background: var(--rojo); color: #FFFFFF; }
+  .tono-pendiente .evento-icono { background: var(--amarillo); color: var(--negro); }
+  .evento-titulo { display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 700; }
+  .tono-falla .evento-titulo { color: var(--rojo); }
+  .tono-pendiente .evento-titulo { color: #6B4F00; }
+  .evento-modulo { font: 700 12px var(--letra-senal); letter-spacing: 0.04em; color: var(--tinta-2); }
+  .evento-detalle { font-size: 13px; color: var(--tinta-2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .evento-hora { font: 12px var(--letra-mono); color: var(--tinta-2); }
+
+  /* ---------- Pantallas más angostas ---------- */
+  @media (max-width: 1100px) {
+    .fila-principal, .fila-secundaria { grid-template-columns: minmax(0, 1fr); }
+    .indicadores { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+  @media (max-width: 700px) {
+    .cabecera-fila { padding: 10px 16px; }
+    main { padding: 16px 16px 32px; gap: 16px; }
+    .subtitulo { display: none; }
+    h1 { font-size: 20px; }
+    .salud { font-size: 13px; padding: 6px 10px; }
+    .reloj { font-size: 18px; }
+    .indicadores { gap: 10px; }
+    .letrero { padding: 10px 12px 12px; }
+    .letrero-valor { font-size: 34px; }
+    .plano, .tarjeta { padding: 14px 14px 16px; }
+    .puestos { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .columna { order: -1; } /* en el celular, registrar una entrada va antes que el plano */
+    .carril-texto { display: none; }
+    .mapa-dibujo { display: none; }
+    .mapa-movil { position: static; width: auto; height: auto; overflow: visible; clip: auto; white-space: normal; }
+    form { flex-wrap: wrap; }
+    .boton-primario { flex: 1 1 100%; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .nodo.pulso rect { animation: none; }
+    .nodo rect, .interruptor input, .interruptor input::before { transition: none; }
+  }
 </style>
 </head>
 <body>
-<header>
-  <h1>Parqueadero</h1>
-  <p>Taller «Rómpelo a propósito» · Arquitectura de Software · UTadeo · reloj: <span id="reloj">—</span></p>
+<header class="cabecera">
+  <div class="cabecera-fila">
+    <div class="marca">
+      <div class="senal-p" aria-hidden="true"><span>P</span></div>
+      <div>
+        <h1>PARQUEADERO</h1>
+        <p class="subtitulo">Taller «Rómpelo a propósito» · Arquitectura de Software · UTadeo</p>
+      </div>
+    </div>
+    <div class="cabecera-estado">
+      <span id="salud" class="salud" role="status">TODO EN SERVICIO</span>
+      <span class="reloj"><span class="solo-lector">Hora del parqueadero: </span><span id="reloj">—</span></span>
+    </div>
+  </div>
+  <div class="franja" aria-hidden="true"></div>
 </header>
 
 <div id="sin-servidor" role="alert">
@@ -53,48 +239,132 @@
 </div>
 
 <main>
-  <section>
-    <h2>Cupos · <span id="libres"></span></h2>
-    <div id="cupos" class="cupos"></div>
+  <section class="indicadores" aria-label="Indicadores del día">
+    <div class="letrero azul">
+      <span class="letrero-etiqueta">LIBRES</span>
+      <span class="letrero-valor"><span id="kpi-libres">—</span><small id="kpi-total"></small></span>
+      <span class="letrero-sub" id="kpi-libres-sub"></span>
+    </div>
+    <div class="letrero">
+      <span class="letrero-etiqueta">ADENTRO</span>
+      <span class="letrero-valor"><span id="kpi-adentro">—</span><small>carros</small></span>
+      <span class="letrero-sub" id="kpi-adentro-sub"></span>
+    </div>
+    <div class="letrero">
+      <span class="letrero-etiqueta">RECAUDO HOY</span>
+      <span class="letrero-valor" id="kpi-recaudo">—</span>
+      <span class="letrero-sub" id="kpi-recaudo-sub"></span>
+    </div>
+    <div class="letrero" id="letrero-pendientes">
+      <span class="letrero-etiqueta">POR COBRAR</span>
+      <span class="letrero-valor" id="kpi-pendientes">—</span>
+      <span class="letrero-sub" id="kpi-pendientes-sub"></span>
+    </div>
   </section>
 
-  <section>
-    <h2>Entrada</h2>
-    <form id="form-entrada">
-      <input id="placa" type="text" placeholder="Placa (ej. ABC123)" autocomplete="off" required>
-      <button type="submit">Registrar entrada</button>
-    </form>
-    <p id="estado" role="status"></p>
-    <h2>Vehículos adentro</h2>
-    <ul id="adentro"></ul>
-  </section>
+  <div class="fila-principal">
+    <section class="plano" aria-labelledby="titulo-plano">
+      <div class="titulo-con-nota">
+        <h2 id="titulo-plano">PLANO · NIVEL 1</h2>
+        <div class="leyenda" aria-hidden="true">
+          <span><span class="muestra-libre"></span>Libre</span>
+          <span><span class="muestra-ocupado"></span>Ocupado</span>
+        </div>
+      </div>
+      <ul id="fila-a" class="puestos puestos-arriba" aria-label="Cupos, primera fila"></ul>
+      <div class="carril" aria-hidden="true">
+        <div class="caseta"><div class="caseta-poste"></div><div class="caseta-brazo"></div><span class="carril-texto">ENTRADA</span></div>
+        <div class="carril-linea"></div>
+        <div class="carril-flechas">›››</div>
+      </div>
+      <ul id="fila-b" class="puestos puestos-abajo" aria-label="Cupos, segunda fila"></ul>
+    </section>
 
-  <section>
-    <h2>Caja</h2>
-    <ul id="cobrados"></ul>
-    <h2 class="separado">Cobros pendientes (ADR-003)</h2>
-    <ul id="pendientes"></ul>
-  </section>
+    <div class="columna">
+      <section class="tarjeta" aria-labelledby="titulo-entrada">
+        <h2 id="titulo-entrada" class="titulo-con-nota">REGISTRAR ENTRADA</h2>
+        <form id="form-entrada">
+          <label class="campo">Placa
+            <input id="placa" type="text" placeholder="Ej. ABC123" autocomplete="off" required>
+          </label>
+          <button class="boton-primario" type="submit">ENTRAR</button>
+        </form>
+        <p id="estado" class="estado" role="status" aria-live="polite"></p>
+      </section>
 
-  <section>
-    <h2>Avisos enviados</h2>
-    <ul id="mensajes"></ul>
-  </section>
+      <section class="tarjeta" aria-labelledby="titulo-rompelo">
+        <div class="titulo-con-nota">
+          <h2 id="titulo-rompelo">RÓMPELO A PROPÓSITO</h2>
+          <span id="fallas-activas" class="nota">sin fallas activas</span>
+        </div>
+        <label class="interruptor">
+          <span class="interruptor-texto"><strong>Tumbar el servidor de correo</strong><span>ADR-002 · ADR-004 — se pierde el aviso, no la entrada</span></span>
+          <input id="correo-caido" type="checkbox">
+        </label>
+        <label class="interruptor">
+          <span class="interruptor-texto"><strong>Dañar la configuración de la tarifa</strong><span>ADR-003 — el carro sale, el cobro queda pendiente</span></span>
+          <input id="tarifa-rota" type="checkbox">
+        </label>
+        <div class="botones">
+          <button id="adelantar" class="boton" type="button">Adelantar el reloj 1 h</button>
+          <button id="reiniciar" class="boton secundario" type="button">Reiniciar el día</button>
+        </div>
+      </section>
 
-  <section>
-    <h2>Rómpelo: fallas a propósito</h2>
-    <label><input id="correo-caido" type="checkbox"> Tumbar el servidor de correo</label>
-    <p class="ayuda">ADR-002 y ADR-004: el aviso se pierde; la entrada y la salida no.</p>
-    <label><input id="tarifa-rota" type="checkbox"> Dañar la configuración de la tarifa</label>
-    <p class="ayuda">ADR-003: el carro sale igual y el cobro queda pendiente.</p>
-    <button id="adelantar" type="button">Adelantar el reloj 1 hora</button>
-    <button id="reiniciar" type="button">Reiniciar el día</button>
-  </section>
+      <section class="tarjeta" aria-labelledby="titulo-caja">
+        <h2 id="titulo-caja" class="titulo-con-nota">CAJA</h2>
+        <ul id="cobrados" class="caja-lista"></ul>
+        <ul id="pendientes" class="caja-lista" aria-label="Cobros pendientes"></ul>
+      </section>
+    </div>
+  </div>
 
-  <section>
-    <h2>Bitácora de fallas</h2>
-    <ul id="fallas"></ul>
-  </section>
+  <div class="fila-secundaria">
+    <section class="tarjeta" aria-labelledby="titulo-mapa">
+      <div class="titulo-con-nota">
+        <h2 id="titulo-mapa">ARQUITECTURA EN VIVO</h2>
+        <span class="nota">quién puede importar a quién · y cómo está cada módulo</span>
+      </div>
+      <svg class="mapa-dibujo" viewBox="0 0 638 300" aria-hidden="true">
+        <defs>
+          <marker id="flecha" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="flecha-punta" d="M0 0 L10 5 L0 10 z"/></marker>
+        </defs>
+        <path class="arista-permitida" d="M319 60 L60 158" marker-end="url(#flecha)"/>
+        <path class="arista-permitida" d="M319 60 L233 158" marker-end="url(#flecha)"/>
+        <path class="arista-permitida" d="M319 60 L405 158" marker-end="url(#flecha)"/>
+        <path class="arista-permitida" d="M319 60 L578 158" marker-end="url(#flecha)"/>
+        <path class="arista-prohibida" d="M120 198 L173 198 M293 198 L345 198 M465 198 L518 198 M233 238 C 233 296, 578 296, 578 238"/>
+        <g id="nodo-app" class="nodo orquesta" transform="translate(229 0)"><rect width="180" height="60" rx="6"/><text x="12" y="26"><tspan class="nodo-nombre">app</tspan><tspan class="nodo-rol" dx="6">orquesta</tspan></text><text class="nodo-estado" x="12" y="46">EN SERVICIO</text></g>
+        <g id="nodo-cobro" class="nodo ok" transform="translate(0 160)"><rect width="120" height="76" rx="6"/><text x="12" y="30"><tspan class="nodo-nombre">cobro</tspan><tspan class="nodo-rol" dx="6">tarifa</tspan></text><text class="nodo-estado" x="12" y="56">EN SERVICIO</text></g>
+        <g id="nodo-ingresos" class="nodo ok" transform="translate(173 160)"><rect width="120" height="76" rx="6"/><text x="12" y="30"><tspan class="nodo-nombre">ingresos</tspan></text><text class="nodo-estado" x="12" y="56">EN SERVICIO</text></g>
+        <g id="nodo-espacios" class="nodo ok" transform="translate(345 160)"><rect width="120" height="76" rx="6"/><text x="12" y="30"><tspan class="nodo-nombre">espacios</tspan></text><text class="nodo-estado" x="12" y="56">EN SERVICIO</text></g>
+        <g id="nodo-avisos" class="nodo ok" transform="translate(518 160)"><rect width="120" height="76" rx="6"/><text x="12" y="30"><tspan class="nodo-nombre">avisos</tspan><tspan class="nodo-rol" dx="6">correo</tspan></text><text class="nodo-estado" x="12" y="56">EN SERVICIO</text></g>
+        <g class="regla" transform="translate(146 186)"><rect x="-18" y="-10" width="36" height="20" rx="10"/><text text-anchor="middle" y="4">R3</text></g>
+        <g class="regla" transform="translate(319 186)"><rect x="-18" y="-10" width="36" height="20" rx="10"/><text text-anchor="middle" y="4">R1</text></g>
+        <g class="regla" transform="translate(491 186)"><rect x="-18" y="-10" width="36" height="20" rx="10"/><text text-anchor="middle" y="4">R4</text></g>
+        <g class="regla" transform="translate(405 281)"><rect x="-32" y="-10" width="64" height="20" rx="10"/><text text-anchor="middle" y="4">R2 · R4</text></g>
+      </svg>
+      <div class="mapa-movil">
+        <ul id="mapa-lista" class="mapa-lista" aria-label="Estado de cada módulo"></ul>
+        <p class="mapa-reglas">Prohibido: R1 espacios → ingresos · R2 ingresos → avisos · R3 ingresos → cobro · R4 avisos → espacios e ingresos. Solo <strong>app</strong> importa a los demás.</p>
+      </div>
+      <div class="mapa-pie">
+        <p id="mapa-leyenda" role="status"></p>
+        <div class="convenciones" aria-hidden="true">
+          <span><span class="raya"></span>import permitido</span>
+          <span><span class="raya prohibida"></span>prohibido por regla</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="tarjeta" aria-labelledby="titulo-bitacora">
+      <div class="titulo-con-nota">
+        <h2 id="titulo-bitacora">BITÁCORA</h2>
+        <span class="nota">lo último primero</span>
+      </div>
+      <ol id="linea" class="linea"></ol>
+    </section>
+  </div>
 </main>
 
 <script type="module" src="src/app.js"></script>

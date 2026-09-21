@@ -71,6 +71,47 @@ test('parqueadero lleno · el siguiente carro no entra y el operario se entera',
   assert.ok(avisos.mensajes().some(m => /Parqueadero lleno/.test(m.texto)));
 });
 
+test('línea de tiempo · el flujo normal queda en orden: entrada, aviso, salida, aviso, cobro', () => {
+  app.entrar('ABC123');
+  app.salir('ABC123');
+  const linea = app.lineaDeTiempo();
+  assert.deepEqual(linea.map(e => e.tipo), ['entrada', 'aviso', 'salida', 'aviso', 'cobro']);
+  assert.deepEqual(linea.map(e => e.modulo), ['ingresos', 'avisos', 'ingresos', 'avisos', 'cobro']);
+});
+
+test('línea de tiempo · con el correo caído y la tarifa dañada, cada falla queda con su módulo', () => {
+  avisos.simularCaidaDelCorreo(true);
+  cobro.configurarTarifa(null);
+  app.entrar('ABC123');
+  app.salir('ABC123');
+  const linea = app.lineaDeTiempo();
+  assert.deepEqual(linea.map(e => e.tipo + ':' + e.modulo),
+    ['entrada:ingresos', 'falla:avisos', 'salida:ingresos', 'falla:avisos', 'pendiente:cobro']);
+});
+
+test('línea de tiempo · un carro que llega sin cupo queda anotado en espacios', () => {
+  for (let i = 1; i <= espacios.totalCupos(); i++) app.entrar('CAR' + i);
+  app.entrar('XYZ999');
+  const ultimos = app.lineaDeTiempo().slice(-2);
+  assert.deepEqual(ultimos.map(e => e.tipo + ':' + e.modulo), ['sinCupo:espacios', 'aviso:avisos']);
+});
+
+test('mapa vivo · con el correo caído y la tarifa dañada, caen avisos y cobro; ingresos sigue en servicio', () => {
+  assert.ok(Object.values(app.estadoDeLosModulos()).every(m => m.estado !== 'falla'));
+  avisos.simularCaidaDelCorreo(true);
+  cobro.configurarTarifa(null);
+  const m = app.estadoDeLosModulos();
+  assert.equal(m.avisos.estado, 'falla');
+  assert.equal(m.cobro.estado, 'falla');
+  assert.equal(m.ingresos.estado, 'ok');
+  assert.equal(m.espacios.estado, 'ok');
+});
+
+test('mapa vivo · con el parqueadero lleno, espacios queda en alerta', () => {
+  for (let i = 1; i <= espacios.totalCupos(); i++) app.entrar('CAR' + i);
+  assert.equal(app.estadoDeLosModulos().espacios.estado, 'alerta');
+});
+
 test('D2 · lleno y con el correo caído: el carro no entra, nada revienta y la falla queda anotada', () => {
   for (let i = 1; i <= espacios.totalCupos(); i++) app.entrar('CAR' + i);
   avisos.simularCaidaDelCorreo(true);

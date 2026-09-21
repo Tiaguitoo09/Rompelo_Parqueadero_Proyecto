@@ -16,7 +16,15 @@ python -m http.server 8000      # y luego http://localhost:8000
 o con *Live Server* de VS Code.
 
 La página tiene dos interruptores para **romperla a propósito**: tumbar el correo y dañar la
-tarifa. El carro entra y sale igual; lo que falló queda en la bitácora de fallas.
+tarifa. El carro entra y sale igual; lo que falló queda en la bitácora, y el mapa de la
+arquitectura muestra qué módulo se cayó y cuál sigue en pie.
+
+## Cómo se ve
+
+![La app con el correo caído y la tarifa dañada: avisos y cobro fuera de servicio, ingresos sigue en pie](docs/captura.png)
+
+*Con el correo caído y la tarifa dañada, `avisos` y `cobro` quedan fuera de servicio e `ingresos`
+sigue registrando: ninguna falla cruza una frontera prohibida.*
 
 ## Quién puede importar a quién
 
