@@ -38,6 +38,37 @@ test('ingresos · rechaza placas inválidas', () => {
   assert.throws(() => ingresos.registrarEntrada('A B C', 'C1', t0), /Placa inválida/);
 });
 
+test('ingresos · un oyente que falla no tumba el registro, y su falla se reporta', t => {
+  let reportada = null;
+  t.after(ingresos.alRegistrar(() => { throw new Error('oyente roto'); }, e => { reportada = e; }));
+  assert.doesNotThrow(() => ingresos.registrarEntrada('ABC123', 'C1', t0));
+  assert.equal(ingresos.vehiculosAdentro().length, 1);
+  assert.equal(reportada?.message, 'oyente roto');
+});
+
+test('ingresos · el oyente recibe una copia: cambiarla no altera el registro', t => {
+  t.after(ingresos.alRegistrar(evento => { evento.salida = new Date(); evento.placa = 'OTRA'; }));
+  ingresos.registrarEntrada('ABC123', 'C1', t0);
+  assert.deepEqual(ingresos.vehiculosAdentro().map(f => f.placa), ['ABC123']);
+});
+
+test('ingresos · cuando anuncia, el registro ya quedó hecho', t => {
+  const loQueVioElOyente = [];
+  t.after(ingresos.alRegistrar(evento => {
+    loQueVioElOyente.push(ingresos.vehiculosAdentro().some(f => f.placa === evento.placa));
+  }));
+  ingresos.registrarEntrada('ABC123', 'C1', t0);
+  assert.deepEqual(loQueVioElOyente, [true]);
+});
+
+test('ingresos · anuncia la entrada y la salida, en ese orden', t => {
+  const tipos = [];
+  t.after(ingresos.alRegistrar(evento => tipos.push(evento.tipo + ':' + evento.placa)));
+  ingresos.registrarEntrada('ABC123', 'C1', t0);
+  ingresos.registrarSalida('ABC123', new Date(+t0 + H));
+  assert.deepEqual(tipos, ['entrada:ABC123', 'salida:ABC123']);
+});
+
 test('cobro · se cobra por hora o fracción, con mínimo de una hora', () => {
   const tarifa = cobro.tarifaActual();
   assert.equal(cobro.calcularCobro({ placa: 'A1B', entrada: t0, salida: new Date(+t0 + 5 * 60000) }).valor, tarifa);

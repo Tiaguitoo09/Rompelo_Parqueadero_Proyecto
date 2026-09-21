@@ -12,6 +12,17 @@ let pendientes = []; // ADR-003: «salida registrada, cobro pendiente», para re
 let bitacora = []; // cada falla queda escrita: nada se pierde en silencio
 let desfaseMinutos = 0; // reloj simulado, para poder mostrar cobros de varias horas
 
+// ADR-002 · ingresos anuncia, avisos escucha. app hace la conexión una sola vez y le agrega a
+// la copia lo que avisos necesita saber (ADR-004: avisos no consulta, recibe). Si el aviso
+// falla, se pierde el aviso, no la operación, y queda anotado en la bitácora.
+ingresos.alRegistrar(evento => {
+  if (evento.tipo === 'entrada') {
+    avisos.avisarEntrada({ placa: evento.placa, cupo: evento.cupo, hora: evento.entrada, libres: espacios.cuposLibres() });
+  } else {
+    avisos.avisarSalida({ placa: evento.placa, cupo: evento.cupo, hora: evento.salida });
+  }
+}, error => anotarFalla('avisos', error));
+
 export function ahora() {
   return new Date(Date.now() + desfaseMinutos * 60000);
 }
@@ -34,9 +45,6 @@ export function entrar(placa, hora = ahora()) {
     espacios.liberar(cupo); // compensar: el registro no se hizo, el cupo apartado se devuelve
     return { ok: false, motivo: e.message };
   }
-  avisar(() => avisos.avisarEntrada({
-    placa: fila.placa, cupo: fila.cupo, hora: fila.entrada, libres: espacios.cuposLibres(),
-  }));
   return { ok: true, fila };
 }
 
@@ -56,11 +64,11 @@ export function salir(placa, hora = ahora()) {
     pendientes.push({ placa: fila.placa, entrada: fila.entrada, salida: fila.salida, motivo: e.message });
     anotarFalla('cobro', e);
   }
-  avisar(() => avisos.avisarSalida({ placa: fila.placa, cupo: fila.cupo, hora: fila.salida }));
   return { ok: true, fila, cuenta, cobroPendiente: cuenta === null };
 }
 
-// ADR-002: si el aviso falla se pierde el aviso, no la operación. Y queda anotado.
+// Cuando no se registra nada (no había cupo) no hay anuncio de ingresos: app avisa directo,
+// con la misma regla de ADR-002: si el aviso falla, se pierde el aviso y queda anotado.
 function avisar(enviar) {
   try {
     enviar();

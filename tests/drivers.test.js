@@ -70,3 +70,11 @@ test('parqueadero lleno · el siguiente carro no entra y el operario se entera',
   assert.ok(avisos.mensajes().some(m => /no había cupo/.test(m.texto)));
   assert.ok(avisos.mensajes().some(m => /Parqueadero lleno/.test(m.texto)));
 });
+
+test('D2 · lleno y con el correo caído: el carro no entra, nada revienta y la falla queda anotada', () => {
+  for (let i = 1; i <= espacios.totalCupos(); i++) app.entrar('CAR' + i);
+  avisos.simularCaidaDelCorreo(true);
+  assert.doesNotThrow(() => app.entrar('XYZ999'));
+  assert.equal(ingresos.vehiculosAdentro().length, espacios.totalCupos());
+  assert.ok(app.fallas().some(f => f.modulo === 'avisos' && /XYZ999|Operario/.test(f.mensaje)));
+});
