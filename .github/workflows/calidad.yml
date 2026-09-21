@@ -1,0 +1,24 @@
+# Aparte de pipeline.yml a propósito: ese es el que se califica y no se toca.
+# Este prueba dos cosas que verificar.js no puede ver: que los drivers se cumplen cuando algo
+# falla de verdad, y que cada regla de reglas.json todavía es capaz de ponerse roja.
+name: Calidad
+
+on:
+  push:
+    branches: [master]
+  workflow_dispatch:
+
+jobs:
+  calidad:
+    name: Drivers probados y reglas que pueden fallar
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Preparar Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Los drivers, probados por comportamiento
+        run: node --test
+      - name: Cada regla puede ponerse roja (prueba por mutación)
+        run: node tools/probar-reglas.js
