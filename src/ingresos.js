@@ -2,10 +2,6 @@
 // Es el único módulo que lo escribe (ADR-001). No calcula tarifas (ADR-003, R3) y no conoce a
 // avisos (ADR-002, R2): cierra su registro, lo anuncia, y no espera a saber quién escuchó.
 
-// ROJO A PROPÓSITO: estos imports violan R2 (ADR-002) y R3 (ADR-003). Se quitan en el siguiente commit.
-import { avisarEntrada } from './avisos.js';
-import { calcularCobro } from './cobro.js';
-
 let registro = [];
 
 // Patrón Observer: ingresos anuncia cada entrada y salida sin saber quién escucha. Cada oyente

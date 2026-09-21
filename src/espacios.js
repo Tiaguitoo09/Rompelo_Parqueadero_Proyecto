@@ -2,9 +2,6 @@
 // Es el único dueño de ese dato. No conoce el registro de entradas y salidas (ADR-001, R1):
 // reporta lo que ve y ahí termina su trabajo.
 
-// ROJO A PROPÓSITO: este import viola R1 (ADR-001). Se quita en el siguiente commit.
-import { vehiculosAdentro } from './ingresos.js';
-
 const TOTAL_POR_DEFECTO = 8;
 let cupos = [];
 
