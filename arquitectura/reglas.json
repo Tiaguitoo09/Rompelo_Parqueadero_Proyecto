@@ -16,5 +16,15 @@
       "cobro"
     ],
     "porque": "Si el registro de salida depende de que el cobro se calcule bien, un carro puede quedar atrapado en la caseta por una tarifa mal configurada. Cerrar el registro y cobrar son cosas distintas: la primera no puede esperar a la segunda."
+  },
+  {
+    "id": "R4",
+    "adr": "ADR-004",
+    "modulo": "avisos",
+    "no_puede_importar": [
+      "espacios",
+      "ingresos"
+    ],
+    "porque": "Un aviso solo cuenta lo que paso, nunca lo cambia. Si avisos pudiera tocar cupos o registros, un correo que falla o un mensaje mal programado podria liberar un cupo ocupado o alterar una entrada, y el parqueadero terminaria cobrandole mal a un cliente sin que nadie sepa por que."
   }
 ]

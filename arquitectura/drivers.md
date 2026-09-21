@@ -21,7 +21,7 @@ Regla general: `espacios`, `ingresos`, `cobro` y `avisos` no se importan entre s
 | D1 | `espacios` solo consulta cupos disponibles, nunca modifica el registro de ingresos | `ingresos` no puede depender de que `espacios` le devuelva algo distinto a lectura |
 | D2 | Si `avisos` falla (correo, notificación de cupo lleno), `ingresos` no se puede caer | `ingresos` no puede importar `avisos` directamente |
 | D3 | Si el cálculo de tarifa/cobro falla, el registro de salida del vehículo no se debe bloquear | separa la lógica de cobro de la lógica de registro dentro de `ingresos`/`app` |
-| D4 | `avisos` solo lee el estado de `espacios` e `ingresos` para notificar, nunca los modifica | `avisos` no puede escribir en `espacios` ni en `ingresos` |
+| D4 | `avisos` solo cuenta lo que pasó, nunca lo cambia: un aviso que falla, o que está mal programado, no puede mover un cupo ni tocar un registro | `avisos` no puede importar `espacios` ni `ingresos`: no los consulta, recibe de `app` una copia de los datos |
 
 D1 y D2 son los "seguros" (mínimo del taller). D3 y D4 son el plus — si D3 no se sostiene con solo 4 archivos, se puede botar y quedarse en 3 reglas; el mínimo son 2.
 
@@ -32,9 +32,9 @@ D1 y D2 son los "seguros" (mínimo del taller). D3 y D4 son el plus — si D3 no
 | Persona | Driver que elige y defiende | ADR |
 |---|---|---|
 | Jesús | D1 — responsabilidad de `espacios` | [ADR-001](adr/ADR-001.md) |
-| Azapipas | D2 — disponibilidad frente a `avisos` | [ADR-002](adr/ADR-002.md) |
+| Santiago | D2 — disponibilidad frente a `avisos` | [ADR-002](adr/ADR-002.md) |
 | Julián | D3 — aislar el cobro de fallos de registro | [ADR-003](adr/ADR-003.md) |
-| Santiago | D4 — avisos de solo lectura | [ADR-004](adr/ADR-004.md) |
+| Sergio (Azapipas) | D4 — `avisos` solo cuenta, nunca cambia | [ADR-004](adr/ADR-004.md) |
 
 ## Qué sigue
 
