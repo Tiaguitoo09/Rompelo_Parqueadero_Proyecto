@@ -3,7 +3,18 @@
     "id": "R1",
     "adr": "ADR-001",
     "modulo": "espacios",
-    "no_puede_importar": ["ingresos"],
+    "no_puede_importar": [
+      "ingresos"
+    ],
     "porque": "El registro de entradas y salidas es el libro contable del parqueadero y debe tener un solo autor. Si espacios pudiera escribirlo para 'corregir' un cupo, un cobro mal hecho ya no se podria rastrear hasta un unico responsable."
+  },
+  {
+    "id": "R3",
+    "adr": "ADR-003",
+    "modulo": "ingresos",
+    "no_puede_importar": [
+      "cobro"
+    ],
+    "porque": "Si el registro de salida depende de que el cobro se calcule bien, un carro puede quedar atrapado en la caseta por una tarifa mal configurada. Cerrar el registro y cobrar son cosas distintas: la primera no puede esperar a la segunda."
   }
 ]

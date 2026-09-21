@@ -30,9 +30,9 @@ D1 y D2 son los "seguros" (mínimo del taller). D3 y D4 son el plus — si D3 no
 
 | Persona | Driver que elige y defiende | ADR |
 |---|---|---|
-| Julián | D1 — responsabilidad de `espacios` | [ADR-001](adr/ADR-001.md) |
+| Jesús | D1 — responsabilidad de `espacios` | [ADR-001](adr/ADR-001.md) |
 | Azapipas | D2 — disponibilidad frente a `avisos` | [ADR-002](adr/ADR-002.md) |
-| Jesús | D3 — aislar el cobro de fallos de registro | [ADR-003](adr/ADR-003.md) |
+| Julián (Santi) | D3 — aislar el cobro de fallos de registro | [ADR-003](adr/ADR-003.md) |
 | Santiago | D4 — avisos de solo lectura | [ADR-004](adr/ADR-004.md) |
 
 ## Qué sigue
