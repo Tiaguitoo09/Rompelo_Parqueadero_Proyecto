@@ -115,4 +115,6 @@ Por eso existen las pruebas de comportamiento además de las reglas.
 - `tools/probar-reglas.js` — la prueba por mutación de las reglas.
 - `tests/` — los drivers, probados por comportamiento.
 - `.github/workflows/` — `pipeline.yml` (Verificar arquitectura), `calidad.yml` (Calidad) y
-  `desplegar.yml` (publica en Pages solo si Verificar arquitectura salió en verde).
+  `desplegar.yml` (publica en Pages solo si Verificar arquitectura salió en verde). Los dos
+  primeros corren en cada push a `master` y en cada Pull Request hacia `master`: un PR que
+  viola una regla queda marcado en rojo antes de fusionarse.
