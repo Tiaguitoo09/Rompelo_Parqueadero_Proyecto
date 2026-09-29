@@ -1,7 +1,7 @@
 // ESPACIOS · el estado de los cupos del parqueadero: libre u ocupado.
 // Es el único dueño de ese dato. No conoce el registro de entradas y salidas (ADR-001, R1):
 // reporta lo que ve y ahí termina su trabajo.
-
+import * as ingresos from './ingresos.js
 const TOTAL_POR_DEFECTO = 8;
 let cupos = [];
 
