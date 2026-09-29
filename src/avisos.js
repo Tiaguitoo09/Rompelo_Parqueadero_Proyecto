@@ -2,7 +2,6 @@
 // operario, que el piso se llenó. Solo cuenta, nunca cambia nada (ADR-004, R4): no conoce los
 // cupos ni el registro, trabaja con la copia de datos que le entregan.
 // Es el módulo menos confiable: depende de un servidor de correo que se cae solo.
-import {liberar} from './espacios.js'
 
 let bandeja = [];
 let correoDisponible = true;
